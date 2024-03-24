@@ -4,14 +4,14 @@
 seeds = false
 skip-lint = false
 
-[programs.localnet]
-coin_flip = "4Txje2aJHy3easv6AopsmSnARknvkJ6VXoJSi46pKnRF"
+[programs.devnet]
+coin_flip = "HGtvZvwo9zBjG8Du7kpLdacEV9LongsNGS2bddcyCB1L"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Localnet"
+cluster = "devnet"
 wallet = "/root/.config/solana/id.json"
 
 [scripts]
