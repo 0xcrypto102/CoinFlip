@@ -21,3 +21,7 @@ When the user flip the sol, fee will go to the owner and the rest will go to the
 ## ClaimBet
 
 This is the step to cliam the reward after win in the flip game
+
+## Test on Devnet
+
+https://coinflip-fe.vercel.app/
