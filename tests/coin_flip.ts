@@ -19,8 +19,8 @@ describe("coin_flip", () => {
   let connection = program.provider.connection;
   const provdier = anchor.AnchorProvider.env();
 
-  const owner = Keypair.fromSecretKey(Uint8Array.from([93,241,149,127,150,75,40,131,222,198,214,225,84,78,102,157,181,245,231,106,49,111,65,167,50,214,55,136,120,176,205,183,235,107,145,1,68,46,115,54,118,167,44,241,173,67,177,80,0,131,118,118,218,31,93,138,157,168,128,60,50,7,130,21]));
-  const user = Keypair.fromSecretKey(Uint8Array.from([176,86,214,173,80,17,200,23,211,91,179,178,120,206,6,236,148,125,225,189,84,166,216,74,173,177,162,167,167,137,7,32,241,173,16,192,124,60,132,57,4,208,224,240,117,75,191,14,251,194,110,254,213,6,239,23,117,45,23,192,251,247,6,150]));
+  const owner = Keypair.fromSecretKey(Uint8Array.from([/* */]));
+  const user = Keypair.fromSecretKey(Uint8Array.from([/* */]));
   
   //  set the pda seeds
   const GLOBAL_STATE_SEED = "GLOBAL-STATE-SEED";
