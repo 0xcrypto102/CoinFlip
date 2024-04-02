@@ -30,6 +30,34 @@ pub fn initialize(ctx: Context<Initialize>, fee: u64, max_bet: u64) -> Result<()
     Ok(())
 }
 
+pub fn update_fee(ctx: Context<UpdateFee>, fee: u64) -> Result<()> {
+    let accts = ctx.accounts;
+
+    if fee > 100 {
+        return Err(CoinFlipError::FeeUnVaildAmount.into());
+    }
+
+    if accts.global_state.owner != accts.owner.key() {
+        return Err(CoinFlipError::NotAllowedOwner.into());
+    }
+
+    accts.global_state.fee = fee;
+
+    Ok(())
+}
+
+pub fn update_owner(ctx: Context<UpdateOwner>, new_owner: Pubkey) -> Result<()> {
+    let accts = ctx.accounts;
+
+    if accts.global_state.owner != accts.owner.key() {
+        return Err(CoinFlipError::NotAllowedOwner.into());
+    }
+
+    accts.global_state.owner = new_owner;
+
+    Ok(())
+}
+
 pub fn coin_flip_bet(ctx: Context<CoinFlipBet>,force: [u8; 32], guess: u8, amount: u64) -> Result<()> {
     let accts = ctx.accounts;
 
@@ -186,7 +214,7 @@ pub struct Initialize<'info> {
     #[account(
         init,
         payer = owner,
-        seeds = [GLOBAL_STATE_SEED, owner.key().as_ref()],
+        seeds = [GLOBAL_STATE_SEED],
         bump,
         space = 8 + size_of::<GlobalState>()
     )]
@@ -204,13 +232,45 @@ pub struct Initialize<'info> {
 }
 
 #[derive(Accounts)]
+pub struct UpdateFee<'info> {
+    #[account(mut)]
+    pub owner: Signer<'info>,
+    
+    #[account(
+        mut,
+        seeds = [GLOBAL_STATE_SEED],
+        bump,
+    )]
+    pub global_state: Account<'info, GlobalState>,
+
+    pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+pub struct UpdateOwner<'info> {
+    #[account(mut)]
+    pub owner: Signer<'info>,
+    
+    #[account(
+        mut,
+        seeds = [GLOBAL_STATE_SEED],
+        bump,
+    )]
+    pub global_state: Account<'info, GlobalState>,
+
+    pub system_program: Program<'info, System>,
+}
+
+
+
+#[derive(Accounts)]
 #[instruction(force: [u8; 32])]
 pub struct CoinFlipBet<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
     #[account(
         mut,
-        seeds = [GLOBAL_STATE_SEED, owner.key().as_ref()],
+        seeds = [GLOBAL_STATE_SEED],
         bump
     )]
     pub global_state: Account<'info, GlobalState>,
@@ -272,7 +332,7 @@ pub struct CliamBet<'info> {
     pub user: Signer<'info>,
     #[account(
         mut,
-        seeds = [GLOBAL_STATE_SEED, global_state.owner.as_ref()],
+        seeds = [GLOBAL_STATE_SEED],
         bump
     )]
     pub global_state: Account<'info, GlobalState>,
@@ -309,7 +369,7 @@ pub struct ManagePool<'info> {
 
     #[account(
         mut,
-        seeds = [GLOBAL_STATE_SEED, owner.key().as_ref()],
+        seeds = [GLOBAL_STATE_SEED],
         bump
     )]
     pub global_state: Account<'info, GlobalState>,
