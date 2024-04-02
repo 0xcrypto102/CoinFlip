@@ -19,8 +19,8 @@ describe("coin_flip", () => {
   let connection = program.provider.connection;
   const provdier = anchor.AnchorProvider.env();
 
-  const owner = Keypair.fromSecretKey(Uint8Array.from([/* */]));
-  const user = Keypair.fromSecretKey(Uint8Array.from([/* */]));
+  const owner = Keypair.fromSecretKey(Uint8Array.from(/* */));
+  const user = Keypair.fromSecretKey(Uint8Array.from(/* */));
   
   //  set the pda seeds
   const GLOBAL_STATE_SEED = "GLOBAL-STATE-SEED";
@@ -42,7 +42,6 @@ describe("coin_flip", () => {
     [globalState, globalStateBump] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from(GLOBAL_STATE_SEED),
-        owner.publicKey.toBuffer()
       ],
       program.programId
     );
@@ -86,10 +85,10 @@ describe("coin_flip", () => {
     console.log("owner: ",globalStateData.owner.toString());
     console.log("fee: ", Number(globalStateData.fee));
     console.log("max_bet: ",Number(globalStateData.maxBet));
-  });
+  }); 
 
   it("Deposit sol for reward pool", async() => {
-    const deposit_amount = 0.2 * LAMPORTS_PER_SOL; 
+    const deposit_amount = 4 * LAMPORTS_PER_SOL; 
     try {
       const depsit_tx = await program.rpc.depositSol(
         new anchor.BN(deposit_amount),
@@ -112,7 +111,7 @@ describe("coin_flip", () => {
       console.log(error);
     }
   }); 
-
+  
   it("withdraw sol for reward pool", async() => {
     const deposit_amount = 0.04 * LAMPORTS_PER_SOL; 
     try {
@@ -136,7 +135,8 @@ describe("coin_flip", () => {
     } catch (error) {
       console.log(error);
     }
-  }); */
+  }); 
+  
   it("coin flip", async() => {
     const globalStateData = await program.account.globalState.fetch(globalState);
     const timestamp = Math.floor(Date.now() / 1000);
@@ -205,7 +205,7 @@ describe("coin_flip", () => {
           }
         );
         user_balance = await connection.getBalance(user.publicKey);
-        console.log(`After Clain: ${user_balance/LAMPORTS_PER_SOL}`);
+        console.log(`After Claim: ${user_balance/LAMPORTS_PER_SOL}`);
       } else {
         console.log("You lost, please try again");
       }
@@ -214,11 +214,29 @@ describe("coin_flip", () => {
       console.log(`Vault Balance: ${vault_balance/LAMPORTS_PER_SOL}`);
 
       let owner_balance = await connection.getBalance(owner.publicKey);
-      console.log(`Vault Balance: ${owner_balance/LAMPORTS_PER_SOL}`);
+      console.log(`owner_balance: ${owner_balance/LAMPORTS_PER_SOL}`);
 
     } catch (error) {
       console.log(error);
     }
    
-  })
+  })*/
+  it("Update fee", async() => {
+    const fee = 3;
+    const tx = await program.rpc.updateFee(
+      new anchor.BN(fee),
+      {
+        accounts: {
+          owner: owner.publicKey,
+          globalState,
+          systemProgram: SystemProgram.programId
+        },
+        signers: [owner]
+      }
+    );
+    console.log("Your transaction signature", tx);
+
+    const globalStateData = await program.account.globalState.fetch(globalState);
+    console.log("fee: ",Number(globalStateData.fee));
+  }); 
 });
