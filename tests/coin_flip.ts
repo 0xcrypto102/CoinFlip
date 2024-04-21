@@ -63,7 +63,7 @@ describe("coin_flip", () => {
 
    
   })
-  /*
+ 
   it("Is initialized!", async () => {
     // Add your test here.
     const tx = await program.rpc.initialize(
@@ -220,7 +220,7 @@ describe("coin_flip", () => {
       console.log(error);
     }
    
-  })*/
+  })
   it("Update fee", async() => {
     const fee = 3;
     const tx = await program.rpc.updateFee(
